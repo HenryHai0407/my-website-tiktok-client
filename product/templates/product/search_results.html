@@ -21,10 +21,11 @@
             <p class="card-text mb-1">Price: ${{ product.price }}</p>
             <p class="card-text mb-3">Stock: {{ product.quantity }}</p>
 
-            <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="mt-auto">
+            <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="add-to-cart-form mt-auto">
               {% csrf_token %}
               <button type="submit" class="btn btn-sm btn-outline-primary w-100">Add to Cart</button>
             </form>
+
           </div>
         </div>
       </div>
@@ -35,4 +36,58 @@
   {% endif %}
 </div>
 
+<!-- 🛒 Mini Cart Preview -->
+<div id="mini-cart" class="position-fixed end-0 top-0 bg-white border shadow-lg p-3" style="z-index: 1050; width: 300px; display: none;">
+  <h5 class="mb-3">🛒 Your Cart</h5>
+  <div id="mini-cart-items">
+    <p>Loading...</p>
+  </div>
+  <a href="{% url 'cart:view_cart' %}" class="btn btn-sm btn-primary mt-3 w-100">View Full Cart</a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const miniCart = document.getElementById("mini-cart");
+
+    function loadMiniCart() {
+      fetch("{% url 'cart:mini_cart_data' %}")
+        .then(response => response.json())
+        .then(data => {
+          const container = document.getElementById("mini-cart-items");
+          if (data.items.length === 0) {
+            container.innerHTML = "<p>Your cart is empty.</p>";
+          } else {
+            container.innerHTML = data.items.map(item => `
+              <div class="border-bottom pb-2 mb-2">
+                <strong>${item.name}</strong><br>
+                $${item.price} x ${item.quantity}
+              </div>
+            `).join('');
+          }
+        });
+    }
+
+    // Intercept form submit and show mini cart
+    document.querySelectorAll(".add-to-cart-form").forEach(form => {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        fetch(form.action, {
+          method: "POST",
+          body: formData,
+        }).then(() => {
+          miniCart.style.display = "block";
+          loadMiniCart();
+          setTimeout(() => {
+            miniCart.style.display = "none";
+          }, 4000); // auto-hide after 4s
+        });
+      });
+    });
+  });
+</script>
 {% endblock %}

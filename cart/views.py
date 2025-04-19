@@ -3,15 +3,17 @@ from django.contrib import messages
 from django.views.decorators.http import require_POST
 import requests
 from django.conf import settings
+from django.http import JsonResponse
 
 # Create your views here.
 @require_POST
 def add_to_cart(request, product_id):
+    product_id = str(product_id)  # Ensure it's always a string key
     cart = request.session.get("cart", {})
-    cart[product_id] = cart.get(product_id, 0) + 1
+    cart[product_id] = cart.get(product_id, 0) + 1  # Increment quantity
     request.session["cart"] = cart
     messages.success(request, "Product added to cart!")
-    return redirect("product:list")  # Or wherever you want to redirect
+    return redirect(request.META.get('HTTP_REFERER', 'product:list'))  # Redirects back to the same page
 
 @require_POST
 def increase_quantity(request, product_id):
@@ -113,4 +115,22 @@ def order_summary(request):
         return redirect("cart:view_cart")
 
     return render(request, "cart/order_summary.html", {"order": order})
+
+def mini_cart_data(request):
+    cart = request.session.get("cart", {})
+    items = []
+
+    for product_id, quantity in cart.items():
+        res = requests.get(f"{settings.API_BASE_URL}/products/{product_id}")
+        if res.status_code == 200:
+            product = res.json()
+            items.append({
+                "id": product["id"],
+                "name": product["name"],
+                "price": product["price"],
+                "quantity": quantity,
+            })
+
+    return JsonResponse({"items": items})
+
 
