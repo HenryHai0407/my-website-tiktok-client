@@ -100,6 +100,9 @@ def checkout(request):
         if response.status_code == 200:
             order = response.json()
             request.session["latest_order"] = order  # ✅ Save for summary
+            request.session["cart"] = {}
+            request.session.modified = True
+            messages.success(request, "🎉 Order placed successfully! Your cart has been cleared.")
             return redirect("cart:order_summary")  # ✅ Redirect here
         else:
             messages.error(request, "Failed to place the order.")
