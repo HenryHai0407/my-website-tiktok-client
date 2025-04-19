@@ -1,0 +1,37 @@
+{% extends "home/base.html" %}
+{% block my_content %}
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="row g-0">
+          <!-- Image Section -->
+          <div class="col-md-5">
+            <img src="https://placehold.co/400x300" class="img-fluid rounded-start" alt="{{ item.name }}">
+          </div>
+
+          <!-- Product Info Section -->
+          <div class="col-md-7">
+            <div class="card-body">
+              <h3 class="card-title">{{ item.name }}</h3>
+              <p class="card-text"><strong>Summary:</strong> {{ item.summary }}</p>
+              <p class="card-text"><strong>Price:</strong> ${{ item.price }}</p>
+              <p class="card-text"><strong>Available Stock:</strong> {{ item.quantity }}</p>
+
+              <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'product:list' %}" class="btn btn-outline-secondary">Back to Products</a>
+                <form method="post" action="{% url 'cart:add_to_cart' item.id %}" class="mt-auto">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-primary w-100">Add to Cart</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

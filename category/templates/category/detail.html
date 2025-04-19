@@ -1,0 +1,43 @@
+{% extends "home/base.html" %}
+{% block my_content %}
+
+<div class="container my-5">
+  <!-- Category Info -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h4 class="card-title text-primary">Category: {{ item.name }}</h4>
+      <h6 class="card-subtitle mb-2 text-muted">ID: {{ item.id }}</h6>
+      <p class="card-text">Description: {{ item.description }}</p>
+    </div>
+  </div>
+
+  <!-- Products Grid -->
+  <h3 class="mb-4">Products in this category</h3>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+    {% for p in item.products %}
+      <div class="col">
+        <div class="card h-100 shadow-sm">
+          <img src="https://placehold.co/300x200" class="card-img-top" alt="{{ p.name }}">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">
+              <a href="{% url 'product:detail' p.id %}" class="text-decoration-none text-dark">
+                {{ p.name }}
+              </a>
+            </h5>
+            <p class="card-text mb-1">Summary: {{ p.summary }}</p>
+            <p class="card-text mb-1">Price: ${{ p.price }}</p>
+            <p class="card-text mb-3">Stock: {{ p.quantity }}</p>
+            <form method="post" action="{% url 'cart:add_to_cart' p.id %}" class="mt-auto">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-primary w-100">Add to Cart</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No products available in this category.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

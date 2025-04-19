@@ -1,0 +1,59 @@
+{% extends "home/base.html" %}
+{% block my_content %}
+{% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="container mt-5">
+  <h2>Your Cart</h2>
+
+  {% if cart_items %}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+        <tr>
+          <td>{{ item.name }}</td>
+          <td>${{ item.price }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ item.subtotal }}</td>
+          <td>
+            <form method="POST" action="{% url 'cart:increase_quantity' item.id %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-success">+</button>
+            </form>
+            <form method="POST" action="{% url 'cart:decrease_quantity' item.id %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-warning">-</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h4>Total: ${{ total_price }}</h4>
+    <form method="POST" action="{% url 'cart:checkout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
+    </form>
+  {% else %}
+    <p class="text-muted">Your cart is empty.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

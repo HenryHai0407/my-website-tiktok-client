@@ -1,0 +1,26 @@
+{% extends "home/base.html" %}
+{% block my_content %}
+
+<div class="container my-5">
+  <h2>Thank you for your purchase!</h2>
+  <p class="text-success">Your order has been placed successfully.</p>
+
+  <h4>Order #{{ order.order_number }}</h4>
+  <p>Status: {{ order.status }}</p>
+  <p>Total Price: ${{ order.total_price }}</p>
+
+  <ul class="list-group">
+    {% for item in order.items %}
+      <li class="list-group-item">
+        Product ID: {{ item.product_id }}<br>
+        Quantity: {{ item.quantity }}<br>
+        Price per unit: ${{ item.unit_price }}<br>
+        Total: ${{ item.total_price }}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="{% url 'product:list' %}" class="btn btn-primary mt-4">Continue Shopping</a>
+</div>
+
+{% endblock %}

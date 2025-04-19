@@ -1,0 +1,41 @@
+{% extends "home/base.html" %} {% block my_content %}
+
+<h1>Sign In</h1>
+<hr />
+<div class="row justify-content-center">
+  <form class="col-4" action="" method="POST">
+    {% csrf_token %}
+    <div class="row mb-3">
+      <label for="inputUsername" class="col-sm-3 col-form-label"
+        >Tai khoan</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="text"
+          class="form-control"
+          id="inputUsername"
+          name="username"
+          required
+        />
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label for="inputPassword" class="col-sm-3 col-form-label"
+        >Mat khau</label
+      >
+      <div class="col-sm-10">
+        <input
+          type="password"
+          class="form-control"
+          id="inputPassword"
+          name="password"
+          required
+        />
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Dang nhap</button>
+  </form>
+  <p>{{ error }}</p>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "home/base.html" %} {% block my_content %}
+
+<div class="container mt-5" style="max-width: 500px">
+  <h2>Đăng ký</h2>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Đăng ký</button>
+  </form>
+
+  {% if error %}
+  <div class="alert alert-danger mt-3">{{ error }}</div>
+  {% endif %}
+</div>
+{% endblock %}

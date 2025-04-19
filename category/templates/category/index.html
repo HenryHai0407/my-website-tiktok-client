@@ -1,0 +1,32 @@
+{% extends "home/base.html" %}
+{% block my_content %}
+
+<div class="container my-5">
+  <h2 class="mb-4 text-center">Explore All Categories</h2>
+
+  {% if items %}
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+    {% for item in items %}
+    <div class="col">
+      <div class="card h-100 shadow-sm">
+        <img src="https://placehold.co/300x200" class="card-img-top" alt="{{ item.name }}">
+        <div class="card-body">
+          <h5 class="card-title">
+            <a href="{% url 'category:detail' item.id %}" class="text-decoration-none text-dark">
+              {{ item.name }}
+            </a>
+          </h5>
+          <p class="card-text">{{ item.description }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="alert alert-warning text-center mt-4">
+      No categories found.
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
